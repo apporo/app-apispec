@@ -23,6 +23,9 @@
   <script src='lib/jsoneditor.min.js' type='text/javascript'></script>
   <script src='lib/marked.js' type='text/javascript'></script>
   <script src='lib/swagger-oauth.js' type='text/javascript'></script>
+  <% if (apiUi.useGoogleFonts) { %>
+  <link href='http://fonts.googleapis.com/css?family=Varela+Round|Open+Sans:400,300,600' rel='stylesheet' type='text/css'><% } %>
+  <link href='login/style.css' media='screen' rel='stylesheet' type='text/css'/>
 
   <!-- Some basic translations -->
   <!-- <script src='lang/translator.js' type='text/javascript'></script> -->
@@ -68,11 +71,11 @@
           showRequestHeaders: false
         });
 
-        function addApiKeyAuthorization(){
+        function addApiKeyAuthorization() {
           var key = encodeURIComponent($('#input_apiKey')[0].value);
           if(key && key.trim() != "") {
-            var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
-            window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
+            var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("<%= apiTokenName %>", key, "header");
+            window.swaggerUi.api.clientAuthorizations.add("apiKey", apiKeyAuth);
             log("added key " + key);
           }
         }
@@ -92,10 +95,6 @@
             console.log.apply(console, arguments);
           }
         }
-
-        $('#login').click(function() {
-          log('You have clicked login button');
-        });
       }
 
       $.ajax({
@@ -145,5 +144,77 @@
 
 <div id="message-bar" class="swagger-ui-wrap" data-sw-translate>&nbsp;</div>
 <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+
+<div class="loginDialog" style="display: none;">
+  <div class="login-wrapper">
+    <div class="login-content">
+      <a class="loginClose" href="#">x</a>
+      <h3>Sign in</h3>
+      <form id="loginForm" method="POST" action="<%= authenticationUrl %>"><% if (loginForm.field.realm.enabled != false) { %>
+        <label for="realm">
+          FleetID:
+          <input type="text" name="realm" id="realm" placeholder="<%= loginForm.field.realm.placeholder %>" pattern="<%= loginForm.field.realm.pattern %>" required="required" />
+        </label><% } %>
+        <label for="username">
+          Username:
+          <input type="text" name="username" id="username" placeholder="<%= loginForm.field.username.placeholder %>" pattern="<%= loginForm.field.username.pattern %>" required="required" />
+        </label>
+        <label for="password">
+          Password:
+          <input type="password" name="password" id="password" placeholder="<%= loginForm.field.password.placeholder %>" pattern="<%= loginForm.field.password.pattern %>" required="required" />
+        </label>
+        <button class="loginSubmit" type="submit">Sign in</button>
+      </form>
+      <div class="loginMessage"></div>
+    </div>
+  </div>
+</div>
+
+<script type='text/javascript'>
+$(document).ready(function() {
+  $("#login").click(function(event) {
+    event.preventDefault();
+    $(".loginDialog").fadeToggle("fast");
+  });
+
+  $(".loginClose").click(function(event) {
+    event.preventDefault();
+    $(".loginDialog").fadeToggle("fast");
+  });
+
+  $("#loginForm").submit(function(event) {
+    event.preventDefault();
+    var credential = {};<% if (loginForm.field.realm.enabled != false) { %>
+    credential['<%= loginForm.field.realm.id %>'] = $('#loginForm input[name=realm]').val();<% } %>
+    credential['<%= loginForm.field.username.id %>'] = $('#loginForm input[name=username]').val();
+    credential['<%= loginForm.field.password.id %>'] = $('#loginForm input[name=password]').val();
+    var authenticationUrl = $('#loginForm').attr('action');
+    $.ajax({
+      url: authenticationUrl,
+      type: "POST",
+      contentType: "application/json",
+      dataType: "json",
+      data: JSON.stringify(credential)
+    }).done(function(result, status, jqXHR) {
+      if (result.status == 0) {
+        $('#input_apiKey').val(result.token);
+        $('#input_apiKey').change();
+        $(".loginDialog").fadeToggle("fast");
+      } else {
+        $('.loginMessage').html(result.message);
+      }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+      $('.loginMessage').html('Cannot connect to authentication Service');
+    });
+  });
+
+  $(document).keyup(function(event) {
+    if(event.keyCode == 27 && $(".loginDialog").css("display") != "none" ) {
+      event.preventDefault();
+      $(".loginDialog").fadeToggle("fast");
+    }
+  });
+});
+</script>
 </body>
 </html>
