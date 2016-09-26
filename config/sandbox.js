@@ -7,6 +7,7 @@ module.exports = {
         title: 'apispec'
       },
       loginForm: {
+        caption: 'Login',
         field: {
           realm: {
             enabled: false,
@@ -26,6 +27,11 @@ module.exports = {
             label: 'Password',
             pattern: '(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$',
             placeholder: 'Password must contain 1 uppercase, lowercase and number'
+          }
+        },
+        button: {
+          submit: {
+            label: 'OK'
           }
         }
       }

@@ -1,3 +1,3 @@
 # app-apispec
 
-> Devebot application apispec layerware
+> Devebot API specification layerware

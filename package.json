@@ -1,6 +1,6 @@
 {
   "name": "app-apispec",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Devebot API specification layerware",
   "homepage": "https://github.com/apporo/app-apispec.git",
   "author": {

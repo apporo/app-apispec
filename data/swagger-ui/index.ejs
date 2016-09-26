@@ -134,9 +134,9 @@
   <div class="swagger-ui-wrap">
     <a id="logo" href="<%= apiUi.url %>"><%= apiUi.title %></a>
     <form id='api_selector'>
-      <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
+      <div class='input'><input id="input_baseUrl" name="baseUrl" type="text" placeholder="https://devebot.com/api"/></div>
       <div class='input'><a id="login" href="#" data-sw-translate>Login</a></div>
-      <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
+      <div class='input'><input id="input_apiKey" name="apiKey" type="text" placeholder="<%= apiTokenName %>"/></div>
       <div class='input'><a id="explore" href="#" data-sw-translate>Explore</a></div>
     </form>
   </div>
@@ -149,21 +149,21 @@
   <div class="login-wrapper">
     <div class="login-content">
       <a class="loginClose" href="#">x</a>
-      <h3>Sign in</h3>
+      <h3><%= loginForm.caption %></h3>
       <form id="loginForm" method="POST" action="<%= authenticationUrl %>"><% if (loginForm.field.realm.enabled != false) { %>
         <label for="realm">
-          FleetID:
+          <%= loginForm.field.realm.label %>:
           <input type="text" name="realm" id="realm" placeholder="<%= loginForm.field.realm.placeholder %>" pattern="<%= loginForm.field.realm.pattern %>" required="required" />
         </label><% } %>
         <label for="username">
-          Username:
+          <%= loginForm.field.username.label %>:
           <input type="text" name="username" id="username" placeholder="<%= loginForm.field.username.placeholder %>" pattern="<%= loginForm.field.username.pattern %>" required="required" />
         </label>
         <label for="password">
-          Password:
+          <%= loginForm.field.password.label %>:
           <input type="password" name="password" id="password" placeholder="<%= loginForm.field.password.placeholder %>" pattern="<%= loginForm.field.password.pattern %>" required="required" />
         </label>
-        <button class="loginSubmit" type="submit">Sign in</button>
+        <button class="loginSubmit" type="submit"><%= loginForm.button.submit.label %></button>
       </form>
       <div class="loginMessage"></div>
     </div>
@@ -196,7 +196,7 @@ $(document).ready(function() {
       dataType: "json",
       data: JSON.stringify(credential)
     }).done(function(result, status, jqXHR) {
-      if (result.status == 0) {
+      if (result.success || result.status == 0) {
         $('#input_apiKey').val(result.token);
         $('#input_apiKey').change();
         $(".loginDialog").fadeToggle("fast");
