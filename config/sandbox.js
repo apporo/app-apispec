@@ -3,6 +3,7 @@ module.exports = {
     appApispec: {
       apiTokenName: 'x-access-token',
       authenticationUrl: '/tokenify/auth',
+      prefixBaseUrl: true,
       ui: {
         title: 'apispec'
       },
@@ -13,8 +14,8 @@ module.exports = {
             enabled: false,
             id: 'realm',
             label: 'Realm',
-            pattern: '^[a-zA-Z][a-zA-Z0-9-_\.]{3,20}$',
-            placeholder: 'Realm must contain only alphabets or digits (3 - 20 characters)'
+            pattern: '^[a-zA-Z0-9-_\.]{1,36}$',
+            placeholder: 'Realm must contain only alphabets or digits (1-36 characters)'
           },
           username: {
             id: 'username',

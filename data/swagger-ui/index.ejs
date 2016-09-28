@@ -105,12 +105,12 @@
           log("Unable to get the Swagger UI URL from the server: " + thrown);
         },
         success: function (message, text, response) {
-          var url = response.getResponseHeader('Swagger-API-Docs-URL');
+          var url = response.getResponseHeader('Swagger-API-Docs-URL');<% if (prefixBaseUrl) { %>
 
           var prefixBaseURL = function(apiDocsPath) {
             return location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + apiDocsPath;
           }
-          url = prefixBaseURL(url);
+          url = prefixBaseURL(url);<% } %>
 
           if (!url) {
             url = window.location.search.match(/url=([^&]+)/);

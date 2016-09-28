@@ -17,14 +17,13 @@
     "devebot-plugin"
   ],
   "peerDependencies": {
-    "app-webserver": "^0.1.9",
+    "app-webserver": "^0.1.11",
     "devebot": "^0.1.23"
   },
   "dependencies": {
-    "app-webserver": "^0.1.9",
+    "app-webserver": "^0.1.11",
     "deasync": "^0.1.7",
     "devebot": "^0.1.23",
-    "ejs": "^2.5.2",
     "swagger-tools": "^0.10.1"
   }
 }
