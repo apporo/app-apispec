@@ -5,7 +5,8 @@ module.exports = {
       authenticationUrl: '/tokenify/auth',
       prefixBaseUrl: true,
       ui: {
-        title: 'apispec'
+        title: 'apispec',
+        isButtonExploreEnabled: false
       },
       loginForm: {
         caption: 'Login',

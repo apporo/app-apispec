@@ -137,7 +137,9 @@
       <div class='input'><input id="input_baseUrl" name="baseUrl" type="text" placeholder="https://devebot.com/api"/></div>
       <div class='input'><a id="login" href="#" data-sw-translate>Login</a></div>
       <div class='input'><input id="input_apiKey" name="apiKey" type="text" placeholder="<%= apiTokenName %>"/></div>
+      <% if (apiUi.isButtonExploreEnabled != false) { %>
       <div class='input'><a id="explore" href="#" data-sw-translate>Explore</a></div>
+      <% } %>
     </form>
   </div>
 </div>
@@ -172,6 +174,20 @@
 
 <script type='text/javascript'>
 $(document).ready(function() {
+  function addBasicHttpAuthorization() {
+    var realm = $('#loginForm input[name=realm]').val();
+    var username = $('#loginForm input[name=username]').val();
+    var password = $('#loginForm input[name=password]').val();
+    if(username && username.trim() != "" && password && password.trim() != "") {
+      realm = (realm && realm.trim() != "") ? realm + "/" : "";
+      var auth = "Basic " + btoa(realm + username + ":" + password);
+      var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("Authorization", auth, "header");
+      window.swaggerUi.api.clientAuthorizations.add("httpauth", apiKeyAuth);
+    } else {
+      window.swaggerUi.api.clientAuthorizations.remove("httpauth");
+    }
+  }
+
   $("#login").click(function(event) {
     event.preventDefault();
     $(".loginDialog").fadeToggle("fast");
@@ -197,6 +213,7 @@ $(document).ready(function() {
       data: JSON.stringify(credential)
     }).done(function(result, status, jqXHR) {
       if (result.success || result.status == 0) {
+        addBasicHttpAuthorization();
         $('#input_apiKey').val(result.token);
         $('#input_apiKey').change();
         $(".loginDialog").fadeToggle("fast");
