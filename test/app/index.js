@@ -3,6 +3,8 @@
 var app = require('devebot').launchApplication({
   appRootPath: __dirname
 }, [
+  'app-webserver',
+  'app-webweaver',
   '../../index.js'
 ]);
 

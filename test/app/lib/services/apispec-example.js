@@ -23,21 +23,7 @@ var Service = function(params) {
   };
 
   var pluginCfg = lodash.get(params, ['sandboxConfig', 'plugins', 'appApispec'], {});
-  var contextPath = pluginCfg.contextPath || '/apispec';
-
-  var webserverTrigger = params.webserverTrigger;
-  var express = webserverTrigger.getExpress();
-  var position = webserverTrigger.getPosition();
-
-  self.buildRestRouter = function(express, app) {
-    app = app || new express();
-
-
-    return app;
-  }
-
-  webserverTrigger.inject(self.buildRestRouter(express),
-      contextPath + '/example', position.inRangeOfMiddlewares(), 'app-apispec-example');
+  var contextPath = pluginCfg.contextPath || '/example';
 
   self.getServiceInfo = function() {
     return {};
@@ -51,7 +37,7 @@ var Service = function(params) {
 };
 
 Service.argumentSchema = {
-  "id": "apispecService",
+  "id": "apispecExample",
   "type": "object",
   "properties": {
     "sandboxName": {
@@ -63,10 +49,10 @@ Service.argumentSchema = {
     "profileConfig": {
       "type": "object"
     },
-    "generalConfig": {
+    "loggingFactory": {
       "type": "object"
     },
-    "loggingFactory": {
+    "apispecService": {
       "type": "object"
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "app-apispec",
-  "version": "0.1.4",
+  "version": "0.2.1",
   "description": "Devebot API specification layerware",
   "homepage": "https://github.com/apporo/app-apispec.git",
   "author": {
@@ -22,14 +22,16 @@
     "devebot-plugin"
   ],
   "peerDependencies": {
-    "app-webserver": "^0.1.11",
-    "devebot": "^0.1.23"
+    "app-webserver": "^0.2.0",
+    "app-webweaver": "^0.2.1",
+    "devebot": "^0.2.0"
   },
   "dependencies": {
-    "app-webserver": "^0.1.11",
-    "devebot": "^0.1.23",
-    "swagger-tools": "^0.10.1",
-    "syncblock": "^0.1.0"
+    "app-webserver": "^0.2.0",
+    "app-webweaver": "^0.2.1",
+    "devebot": "^0.2.0",
+    "swagger-tools": "0.10.1",
+    "syncblock": "^0.1.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

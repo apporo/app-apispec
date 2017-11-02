@@ -1,6 +1,7 @@
 module.exports = {
   plugins: {
     appApispec: {
+      contextPath: '/example',
       apiTokenName: 'x-access-token',
       authenticationUrl: '/tokenify/auth',
       prefixBaseUrl: true,
@@ -38,6 +39,9 @@ module.exports = {
           }
         }
       }
+    },
+    appWebweaver: {
+      defaultRedirectUrl: '/example/apispec/docs'
     }
   }
 };
