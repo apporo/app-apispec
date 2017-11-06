@@ -2,11 +2,10 @@
 
 var app = require('devebot').launchApplication({
   appRootPath: __dirname
-}, [
-  'app-webserver',
-  'app-webweaver',
-  '../../index.js'
-]);
+}, [{
+  name: 'app-apispec',
+  path: '../../index.js'
+}]);
 
 if (require.main === module) app.server.start();
 
