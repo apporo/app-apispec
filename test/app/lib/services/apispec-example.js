@@ -1,8 +1,5 @@
 'use strict';
 
-var events = require('events');
-var util = require('util');
-
 var Devebot = require('devebot');
 var Promise = Devebot.require('bluebird');
 var lodash = Devebot.require('lodash');
@@ -15,7 +12,7 @@ var Service = function(params) {
 
   var self = this;
   var logger = params.loggingFactory.getLogger();
-  var pluginCfg = lodash.get(params, ['sandboxConfig'], {});
+  var pluginCfg = params.sandboxConfig;
   var contextPath = pluginCfg.contextPath || '/example';
 
   debugx.enabled && debugx(' - constructor end!');
