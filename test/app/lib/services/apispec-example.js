@@ -3,7 +3,7 @@
 var Devebot = require('devebot');
 var Promise = Devebot.require('bluebird');
 var lodash = Devebot.require('lodash');
-var debugx = Devebot.require('debug')('appApispec:example');
+var debugx = Devebot.require('pinbug')('app-apispec:example');
 
 var Service = function(params) {
   debugx.enabled && debugx(' + constructor begin ...');
@@ -16,16 +16,6 @@ var Service = function(params) {
   var contextPath = pluginCfg.contextPath || '/example';
 
   debugx.enabled && debugx(' - constructor end!');
-};
-
-Service.argumentSchema = {
-  "id": "apispecExample",
-  "type": "object",
-  "properties": {
-    "apispecService": {
-      "type": "object"
-    }
-  }
 };
 
 module.exports = Service;
