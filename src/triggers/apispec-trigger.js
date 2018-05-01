@@ -1,26 +1,26 @@
 'use strict';
 
-var Devebot = require('devebot');
-var Promise = Devebot.require('bluebird');
-var chores = Devebot.require('chores');
-var lodash = Devebot.require('lodash');
+const Devebot = require('devebot');
+const Promise = Devebot.require('bluebird');
+const chores = Devebot.require('chores');
+const lodash = Devebot.require('lodash');
 
-var Service = function(params) {
+function RestspecTrigger(params) {
   params = params || {};
-  var self = this;
+  let self = this;
 
-  var LX = params.loggingFactory.getLogger();
-  var LT = params.loggingFactory.getTracer();
-  var packageName = params.packageName || 'app-apispec';
-  var blockRef = chores.getBlockRef(__filename, packageName);
+  let LX = params.loggingFactory.getLogger();
+  let LT = params.loggingFactory.getTracer();
+  let packageName = params.packageName || 'app-apispec';
+  let blockRef = chores.getBlockRef(__filename, packageName);
 
   LX.has('silly') && LX.log('silly', LT.toMessage({
     tags: [ blockRef, 'constructor-begin' ],
     text: ' + constructor begin ...'
   }));
 
-  var pluginCfg = lodash.get(params, ['sandboxConfig'], {});
-  var apispecService = params['apispecService'];
+  let pluginCfg = lodash.get(params, ['sandboxConfig'], {});
+  let apispecService = params['apispecService'];
 
   self.start = function() {
     if (pluginCfg.lazying !== false) {
@@ -40,6 +40,6 @@ var Service = function(params) {
   }));
 };
 
-Service.referenceList = [ 'apispecService' ];
+RestspecTrigger.referenceList = [ 'apispecService' ];
 
-module.exports = Service;
+module.exports = RestspecTrigger;

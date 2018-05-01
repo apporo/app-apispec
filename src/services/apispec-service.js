@@ -1,47 +1,47 @@
 'use strict';
 
-var Devebot = require('devebot');
-var Promise = Devebot.require('bluebird');
-var chores = Devebot.require('chores');
-var lodash = Devebot.require('lodash');
+const Devebot = require('devebot');
+const Promise = Devebot.require('bluebird');
+const chores = Devebot.require('chores');
+const lodash = Devebot.require('lodash');
 
-var path = require('path');
-var swaggerTools = require('swagger-tools');
-var syncblock = require('syncblock');
+const path = require('path');
+const swaggerTools = require('swagger-tools');
+const syncblock = require('syncblock');
 
-var Service = function(params) {
+function RestspecService(params) {
   params = params || {};
-  var self = this;
+  let self = this;
 
-  var LX = params.loggingFactory.getLogger();
-  var LT = params.loggingFactory.getTracer();
-  var packageName = params.packageName || 'app-apispec';
-  var blockRef = chores.getBlockRef(__filename, packageName);
+  let LX = params.loggingFactory.getLogger();
+  let LT = params.loggingFactory.getTracer();
+  let packageName = params.packageName || 'app-apispec';
+  let blockRef = chores.getBlockRef(__filename, packageName);
 
   LX.has('silly') && LX.log('silly', LT.toMessage({
     tags: [ blockRef, 'constructor-begin' ],
     text: ' + constructor begin ...'
   }));
 
-  var pluginCfg = params.sandboxConfig;
-  var contextPath = pluginCfg.contextPath || '/apispec';
+  let pluginCfg = params.sandboxConfig;
+  let contextPath = pluginCfg.contextPath || '/apispec';
 
-  var webweaverService = params['webweaverService'];
-  var express = webweaverService.express;
+  let webweaverService = params['app-webweaver/webweaverService'];
+  let express = webweaverService.express;
 
-  var swaggerApiSpec = require(pluginCfg.specificationFile || '../../data/swagger/apispec.json');
+  let swaggerApiSpec = require(pluginCfg.specificationFile || '../../data/swagger/apispec.json');
   self.getApiSpecDocument = function() {
     return swaggerApiSpec;
   };
 
-  var swaggerMiddleware = null;
+  let swaggerMiddleware = null;
   self.getSwaggerMiddleware = function() {
     return (swaggerMiddleware = swaggerMiddleware || new express());
   }
 
   self.initializeSwagger = function() {
     // swaggerRouter configuration
-    var swaggerOpts = {
+    let swaggerOpts = {
       useStubs: pluginCfg.mockMode || (process.env.NODE_ENV === 'development')
     };
     if (pluginCfg.controllersDir) {
@@ -49,9 +49,9 @@ var Service = function(params) {
     }
     // Initialize the Swagger middleware
     return new Promise(function(onResolved, onRejected) {
-      var swaggerApiSpec = self.getApiSpecDocument();
+      let swaggerApiSpec = self.getApiSpecDocument();
       swaggerTools.initializeMiddleware(swaggerApiSpec, function (middleware) {
-        var mw = self.getSwaggerMiddleware();
+        let mw = self.getSwaggerMiddleware();
 
         LX.has('silly') && LX.log('silly', LT.toMessage({
           text: ' - Interpret Swagger resources and attach metadata to request (#1)'
@@ -127,7 +127,7 @@ var Service = function(params) {
   }
 
   self.getOverrideStaticDirLayer = function(branches) {
-    var layer = {
+    let layer = {
       name: 'app-apispec-customize',
       path: contextPath + '/apispec/docs',
       branches: branches,
@@ -140,7 +140,7 @@ var Service = function(params) {
     return layer;
   }
 
-  var childRack = null;
+  let childRack = null;
   if (pluginCfg.autowired !== false) {
     childRack = childRack || {
       name: 'app-apispec-branches',
@@ -163,6 +163,6 @@ var Service = function(params) {
   }));
 };
 
-Service.referenceList = [ 'webweaverService' ];
+RestspecService.referenceList = [ 'app-webweaver/webweaverService' ];
 
-module.exports = Service;
+module.exports = RestspecService;
