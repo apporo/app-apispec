@@ -34,12 +34,10 @@
     "devebot-plugin"
   ],
   "peerDependencies": {
-    "app-webserver": "^0.2.2",
     "app-webweaver": "^0.2.2",
     "devebot": "^0.2.6"
   },
   "dependencies": {
-    "app-webserver": "^0.2.2",
     "app-webweaver": "^0.2.2",
     "devebot": "^0.2.6",
     "swagger-tools": "0.10.1",
