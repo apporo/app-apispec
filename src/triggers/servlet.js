@@ -4,7 +4,7 @@ const Devebot = require('devebot');
 const Promise = Devebot.require('bluebird');
 const lodash = Devebot.require('lodash');
 
-function RestspecTrigger(params = {}) {
+function Trigger(params = {}) {
   const pluginCfg = lodash.get(params, ['sandboxConfig'], {});
   const { apispecService } = params;
 
@@ -21,8 +21,8 @@ function RestspecTrigger(params = {}) {
   };
 };
 
-RestspecTrigger.referenceHash = {
+Trigger.referenceHash = {
   apispecService: 'restapi'
 };
 
-module.exports = RestspecTrigger;
+module.exports = Trigger;

@@ -6,7 +6,7 @@ const path = require('path');
 const swaggerTools = require('swagger-tools');
 const syncblock = require('syncblock');
 
-function RestspecService(params = {}) {
+function Service(params = {}) {
   const L = params.loggingFactory.getLogger();
   const T = params.loggingFactory.getTracer();
 
@@ -17,11 +17,12 @@ function RestspecService(params = {}) {
   const express = webweaverService.express;
 
   let swaggerApiSpec = require(pluginCfg.specificationFile || '../../data/swagger/apispec.json');
+  let swaggerMiddleware = null;
+
   this.getApiSpecDocument = function() {
     return swaggerApiSpec;
   };
 
-  let swaggerMiddleware = null;
   this.getSwaggerMiddleware = function() {
     return (swaggerMiddleware = swaggerMiddleware || new express());
   }
@@ -147,8 +148,8 @@ function RestspecService(params = {}) {
   }
 };
 
-RestspecService.referenceHash = {
+Service.referenceHash = {
   webweaverService: 'app-webweaver/webweaverService'
 };
 
-module.exports = RestspecService;
+module.exports = Service;
