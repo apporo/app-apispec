@@ -2,44 +2,32 @@
 
 const Devebot = require('devebot');
 const Promise = Devebot.require('bluebird');
-const chores = Devebot.require('chores');
-const lodash = Devebot.require('lodash');
-
 const path = require('path');
 const swaggerTools = require('swagger-tools');
 const syncblock = require('syncblock');
 
-function RestspecService(params) {
-  params = params || {};
-  let self = this;
-
-  let LX = params.loggingFactory.getLogger();
-  let LT = params.loggingFactory.getTracer();
-  let packageName = params.packageName || 'app-apispec';
-  let blockRef = chores.getBlockRef(__filename, packageName);
-
-  LX.has('silly') && LX.log('silly', LT.toMessage({
-    tags: [ blockRef, 'constructor-begin' ],
-    text: ' + constructor begin ...'
-  }));
+function RestspecService(params = {}) {
+  const L = params.loggingFactory.getLogger();
+  const T = params.loggingFactory.getTracer();
 
   let pluginCfg = params.sandboxConfig;
   let contextPath = pluginCfg.contextPath || '/apispec';
 
-  let webweaverService = params['app-webweaver/webweaverService'];
+  let { webweaverService } = params;
   let express = webweaverService.express;
 
   let swaggerApiSpec = require(pluginCfg.specificationFile || '../../data/swagger/apispec.json');
-  self.getApiSpecDocument = function() {
+  this.getApiSpecDocument = function() {
     return swaggerApiSpec;
   };
 
   let swaggerMiddleware = null;
-  self.getSwaggerMiddleware = function() {
+  this.getSwaggerMiddleware = function() {
     return (swaggerMiddleware = swaggerMiddleware || new express());
   }
 
-  self.initializeSwagger = function() {
+  this.initializeSwagger = function() {
+    const self = this;
     // swaggerRouter configuration
     let swaggerOpts = {
       useStubs: pluginCfg.mockMode || (process.env.NODE_ENV === 'development')
@@ -53,22 +41,22 @@ function RestspecService(params) {
       swaggerTools.initializeMiddleware(swaggerApiSpec, function (middleware) {
         let mw = self.getSwaggerMiddleware();
 
-        LX.has('silly') && LX.log('silly', LT.toMessage({
+        L.has('silly') && L.log('silly', T.toMessage({
           text: ' - Interpret Swagger resources and attach metadata to request (#1)'
         }));
         mw.use(middleware.swaggerMetadata());
 
-        LX.has('silly') && LX.log('silly', LT.toMessage({
+        L.has('silly') && L.log('silly', T.toMessage({
           text: ' - Validate Swagger requests (#2)'
         }));
         mw.use(middleware.swaggerValidator());
 
-        LX.has('silly') && LX.log('silly', LT.toMessage({
+        L.has('silly') && L.log('silly', T.toMessage({
           text: ' - Route validated requests to appropriate controller (#3)'
         }));
         mw.use(middleware.swaggerRouter(swaggerOpts));
 
-        LX.has('silly') && LX.log('silly', LT.toMessage({
+        L.has('silly') && L.log('silly', T.toMessage({
           text: ' - Serve the Swagger documents and Swagger UI (#4)'
         }));
         mw.use(middleware.swaggerUi());
@@ -78,7 +66,8 @@ function RestspecService(params) {
     });
   }
 
-  self.buildRestRouter = function(express, app) {
+  this.buildRestRouter = function(express, app) {
+    const self = this;
     app = app || new express();
 
     app.set('views', __dirname + '/../../data/swagger-ui');
@@ -108,7 +97,7 @@ function RestspecService(params) {
     return app;
   }
 
-  self.getSwaggerUiLayer = function(branches) {
+  this.getSwaggerUiLayer = function(branches) {
     return {
       name: 'app-apispec-swaggerui',
       path: contextPath + '/apispec/docs',
@@ -117,16 +106,16 @@ function RestspecService(params) {
     }
   }
 
-  self.getApidocsLayer = function(branches) {
+  this.getApidocsLayer = function(branches) {
     return {
       name: 'app-apispec-apidocs',
       path: contextPath + '/apispec',
-      middleware: self.buildRestRouter(express),
+      middleware: this.buildRestRouter(express),
       branches: branches
     }
   }
 
-  self.getOverrideStaticDirLayer = function(branches) {
+  this.getOverrideStaticDirLayer = function(branches) {
     let layer = {
       name: 'app-apispec-customize',
       path: contextPath + '/apispec/docs',
@@ -148,21 +137,18 @@ function RestspecService(params) {
     };
     webweaverService.push([
       webweaverService.getDefaultRedirectLayer(),
-      self.getOverrideStaticDirLayer(),
-      self.getSwaggerUiLayer(),
+      this.getOverrideStaticDirLayer(),
+      this.getSwaggerUiLayer(),
       webweaverService.getSessionLayer([
-        self.getApidocsLayer(),
+        this.getApidocsLayer(),
         childRack
       ], contextPath)
     ], pluginCfg.priority);
   }
-
-  LX.has('silly') && LX.log('silly', LT.toMessage({
-    tags: [ blockRef, 'constructor-end' ],
-    text: ' - constructor end!'
-  }));
 };
 
-RestspecService.referenceList = [ 'app-webweaver/webweaverService' ];
+RestspecService.referenceHash = {
+  webweaverService: 'app-webweaver/webweaverService'
+};
 
 module.exports = RestspecService;
