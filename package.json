@@ -21,10 +21,10 @@
   "scripts": {
     "build": "babel ./src -d ./lib",
     "clean": "rm -rf ./lib",
-    "prepublish": "npm run clean && NODE_ENV=${DEVEBOT_NODE_ENV:-production} npm run build",
-    "pretest": "npm run clean && NODE_ENV=${DEVEBOT_NODE_ENV:-test} npm run build",
-    "test": "cucumber-js ./test/**/*.feature",
-    "verify": "npm run prepublish && cucumber-js ./test/**/*.feature"
+    "prepublish": "npm run clean && cross-env NODE_ENV=${DEVEBOT_NODE_ENV:-production} npm run build",
+    "pretest": "npm run clean && cross-env NODE_ENV=${DEVEBOT_NODE_ENV:-test} npm run build",
+    "test": "mocha ./test/{bdd,tdd}/*test.js",
+    "verify": "npm run prepublish && mocha ./test/{bdd,tdd}/*test.js"
   },
   "engines": {
     "node": "0.10 || 0.11 || 0.12 || 4"
@@ -47,6 +47,14 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-minify-mangle-names": "^0.4.0",
     "babel-preset-env": "^1.6.1",
-    "chai": "^3.5.0"
+    "cross-env": "^5.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "chai": "^3.5.0",
+    "mocha": "^6.1.4"
   }
 }
