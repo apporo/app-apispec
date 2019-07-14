@@ -22,7 +22,7 @@ function RestspecTrigger(params = {}) {
 };
 
 RestspecTrigger.referenceHash = {
-  apispecService: 'apispecService'
+  apispecService: 'restapi'
 };
 
 module.exports = RestspecTrigger;

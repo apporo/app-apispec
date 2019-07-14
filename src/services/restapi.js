@@ -10,11 +10,11 @@ function RestspecService(params = {}) {
   const L = params.loggingFactory.getLogger();
   const T = params.loggingFactory.getTracer();
 
-  let pluginCfg = params.sandboxConfig;
-  let contextPath = pluginCfg.contextPath || '/apispec';
+  const pluginCfg = params.sandboxConfig;
+  const contextPath = pluginCfg.contextPath || '/apispec';
 
-  let { webweaverService } = params;
-  let express = webweaverService.express;
+  const { webweaverService } = params;
+  const express = webweaverService.express;
 
   let swaggerApiSpec = require(pluginCfg.specificationFile || '../../data/swagger/apispec.json');
   this.getApiSpecDocument = function() {
@@ -70,16 +70,16 @@ function RestspecService(params = {}) {
     const self = this;
     app = app || new express();
 
-    app.set('views', __dirname + '/../../data/swagger-ui');
+    app.set('views', path.join(__dirname, '/../../data/swagger-ui'));
     app.set('view engine', 'ejs');
 
     app.get(['/docs', '/docs/index.html'], function(req, res, next) {
-      res.setHeader('Swagger-API-Docs-URL', contextPath + '/apispec/api-docs');
+      res.setHeader('Swagger-API-Docs-URL', path.join(contextPath, '/apispec/api-docs'));
       res.render('index', {
         apiUi: {
           title: pluginCfg.ui.title || 'swagger',
           isButtonExploreEnabled: pluginCfg.ui.isButtonExploreEnabled,
-          url: contextPath + '/apispec/docs'
+          url: path.join(contextPath, '/apispec/docs')
         },
         apiTokenName: pluginCfg.apiTokenName || 'api_token',
         authenticationUrl: pluginCfg.authenticationUrl || '/tokenify/auth',
@@ -100,7 +100,7 @@ function RestspecService(params = {}) {
   this.getSwaggerUiLayer = function(branches) {
     return {
       name: 'app-apispec-swaggerui',
-      path: contextPath + '/apispec/docs',
+      path: path.join(contextPath, '/apispec/docs'),
       middleware: express.static(path.join(__dirname, '../../data/swagger-ui/public')),
       branches: branches
     }
@@ -109,7 +109,7 @@ function RestspecService(params = {}) {
   this.getApidocsLayer = function(branches) {
     return {
       name: 'app-apispec-apidocs',
-      path: contextPath + '/apispec',
+      path: path.join(contextPath, '/apispec'),
       middleware: this.buildRestRouter(express),
       branches: branches
     }
@@ -118,7 +118,7 @@ function RestspecService(params = {}) {
   this.getOverrideStaticDirLayer = function(branches) {
     let layer = {
       name: 'app-apispec-customize',
-      path: contextPath + '/apispec/docs',
+      path: path.join(contextPath, '/apispec/docs'),
       branches: branches,
       skipped: true
     };
