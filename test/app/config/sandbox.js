@@ -11,7 +11,7 @@ module.exports = {
       apiTokenName: 'x-access-token',
       authenticationUrl: '/tokenify/auth',
       prefixBaseUrl: true,
-      specificationFile: require('path').join(__dirname, '../data/swagger.json'),
+      specificationFile: path.join(__dirname, '../data/swagger.json'),
       ui: {
         title: 'apispec',
         isButtonExploreEnabled: false
@@ -45,10 +45,10 @@ module.exports = {
           }
         }
       },
-      // defaultApiDocs: path.join(__dirname, '../data/swagger.json')
+      uiType: 'swagger-ui-express', // 'swagger-tools'
     },
     appWebweaver: {
-      defaultRedirectUrl: contextPath + '/apispec/docs'
+      defaultRedirectUrl: path.join(contextPath, '/apispec/docs')
     }
   }
 };

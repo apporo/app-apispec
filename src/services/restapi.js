@@ -16,16 +16,22 @@ function Service(params = {}) {
       name: 'app-apispec-branches',
       middleware: express()
     };
-    webweaverService.push([
-      webweaverService.getDefaultRedirectLayer(),
-      swaggerTools.getOverrideStaticDirLayer(),
-      swaggerTools.getSwaggerUiLayer(),
-      swaggerUiExpress.getSwaggerUiExpress(),
-      webweaverService.getSessionLayer([
-        swaggerTools.getApidocsLayer(),
-        childRack
-      ], contextPath)
-    ], pluginCfg.priority);
+    const layers = [
+      webweaverService.getDefaultRedirectLayer()
+    ];
+    if (pluginCfg.uiType === 'swagger-ui-express') {
+      layers.push(swaggerUiExpress.getSwaggerUiExpress());
+    } else {
+      layers.push(
+        swaggerTools.getOverrideStaticDirLayer(),
+        swaggerTools.getSwaggerUiLayer(),
+        webweaverService.getSessionLayer([
+          swaggerTools.getApidocsLayer(),
+          childRack
+        ], contextPath)
+      )
+    }
+    webweaverService.push(layers, pluginCfg.priority);
   }
 };
 

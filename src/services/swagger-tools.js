@@ -11,7 +11,9 @@ function Service(params = {}) {
   const T = params.loggingFactory.getTracer();
 
   const pluginCfg = params.sandboxConfig;
-  const contextPath = pluginCfg.contextPath || '/apispec';
+  const contextPath = pluginCfg.contextPath || '/swagger';
+  const apidocsPath = pluginCfg.apidocsPath || '/apispec/api-docs';
+  const webdocsPath = pluginCfg.webdocsPath || '/apispec/docs';
 
   const { swaggerBuilder, webweaverService } = params;
   const express = webweaverService.express;
@@ -75,12 +77,12 @@ function Service(params = {}) {
     app.set('view engine', 'ejs');
 
     app.get(['/docs', '/docs/index.html'], function(req, res, next) {
-      res.setHeader('Swagger-API-Docs-URL', path.join(contextPath, '/apispec/api-docs'));
+      res.setHeader('Swagger-API-Docs-URL', path.join(contextPath, apidocsPath));
       res.render('index', {
         apiUi: {
           title: pluginCfg.ui.title || 'swagger',
           isButtonExploreEnabled: pluginCfg.ui.isButtonExploreEnabled,
-          url: path.join(contextPath, '/apispec/docs')
+          url: path.join(contextPath, webdocsPath)
         },
         apiTokenName: pluginCfg.apiTokenName || 'api_token',
         authenticationUrl: pluginCfg.authenticationUrl || '/tokenify/auth',
@@ -101,7 +103,7 @@ function Service(params = {}) {
   this.getSwaggerUiLayer = function(branches) {
     return {
       name: 'app-apispec-swaggerui',
-      path: path.join(contextPath, '/apispec/docs'),
+      path: path.join(contextPath, webdocsPath),
       middleware: express.static(path.join(__dirname, '../../data/swagger-ui/public')),
       branches: branches
     }
@@ -119,7 +121,7 @@ function Service(params = {}) {
   this.getOverrideStaticDirLayer = function(branches) {
     let layer = {
       name: 'app-apispec-customize',
-      path: path.join(contextPath, '/apispec/docs'),
+      path: path.join(contextPath, webdocsPath),
       branches: branches,
       skipped: true
     };

@@ -10,7 +10,8 @@ function Service(params = {}) {
   const T = params.loggingFactory.getTracer();
 
   const pluginCfg = params.sandboxConfig;
-  const contextPath = pluginCfg.contextPath || '/apispec';
+  const contextPath = pluginCfg.contextPath || '/swagger';
+  const webdocsPath = pluginCfg.webdocsPath || '/apispec/docs';
 
   const { swaggerBuilder, webweaverService } = params;
   const express = webweaverService.express;
@@ -25,7 +26,7 @@ function Service(params = {}) {
   this.getSwaggerUiExpress = function(branches) {
     return {
       name: 'app-apispec-swagger-ui-express',
-      path: path.join(contextPath, '/apispec/express'),
+      path: path.join(contextPath, webdocsPath),
       middleware: this.buildSwaggerUiRouter(express),
       branches: branches
     }
