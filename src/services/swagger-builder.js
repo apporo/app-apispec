@@ -13,6 +13,25 @@ function Service(params = {}) {
 
   const apiDocs = require(sandboxConfig.defaultApiDocs);
 
+  this.setApiLayout = function (apiDocs = {}) {
+    this.setHost(apiDocs.host);
+    this.setBasePath(apiDocs.basePath);
+    this.setSchemes(apiDocs.schemes);
+    this.setInfo(apiDocs.info);
+    this.setExternalDocs(apiDocs.externalDocs);
+  }
+
+  this.addApiEntries = function (fromDocs = {}) {
+    apiDocs.paths = apiDocs.paths || {};
+    lodash.forOwn(fromDocs.paths, function(descriptor, apiUrl) {
+      apiDocs.paths[apiUrl] = descriptor;
+    });
+    apiDocs.definitions = apiDocs.definitions || {};
+    lodash.forOwn(fromDocs.definitions, function (descriptor, name) {
+      apiDocs.definitions[name] = descriptor;
+    });
+  }
+
   this.setHost = function (host) {
     if (lodash.isString(host) && !lodash.isEmpty(host)) {
       apiDocs.host = host;
@@ -31,8 +50,16 @@ function Service(params = {}) {
     }
   }
 
+  this.setInfo = function (info) {
+    if (lodash.isObject(info) && !lodash.isEmpty(info)) {
+      apiDocs.info = apiDocs.info || {};
+      lodash.merge(apiDocs.info, info);
+    }
+  }
+
   this.setExternalDocs = function (externalDocs) {
     if (externalDocs && lodash.isObject(externalDocs)) {
+      apiDocs.externalDocs = apiDocs.externalDocs || {};
       lodash.merge(apiDocs.externalDocs, externalDocs);
     }
   }
