@@ -1,4 +1,5 @@
 var contextPath = '/example';
+var path = require('path');
 
 module.exports = {
   application: {
@@ -43,7 +44,8 @@ module.exports = {
             label: 'OK'
           }
         }
-      }
+      },
+      // defaultApiDocs: path.join(__dirname, '../data/swagger.json')
     },
     appWebweaver: {
       defaultRedirectUrl: contextPath + '/apispec/docs'

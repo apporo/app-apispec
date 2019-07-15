@@ -1,3 +1,7 @@
+'use strict';
+
+var path = require('path');
+
 module.exports = {
   plugins: {
     appApispec: {
@@ -36,7 +40,8 @@ module.exports = {
             label: 'OK'
           }
         }
-      }
+      },
+      defaultApiDocs: path.join(__dirname, '../data/api-docs/swagger.json')
     }
   }
 };

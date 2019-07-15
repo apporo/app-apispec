@@ -22,7 +22,7 @@ function Trigger(params = {}) {
 };
 
 Trigger.referenceHash = {
-  apispecService: 'restapi'
+  apispecService: 'swaggerTools'
 };
 
 module.exports = Trigger;
