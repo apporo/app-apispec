@@ -22,10 +22,25 @@ function Service(params = {}) {
   }
 
   this.addApiEntries = function (fromDocs = {}) {
+    // the the tags
+    apiDocs.tags = apiDocs.tags || [];
+    const currentTags = lodash.filter(apiDocs.tags, function (tag) {
+      return tag && lodash.isObject(tag);
+    });
+    const tagMap = lodash.keyBy(currentTags, function (tag) {
+      return lodash.lowerCase(tag.name);
+    });
+    lodash.forEach(fromDocs.tags, function (tag) {
+      if (!(lodash.lowerCase(tag.name) in tagMap)) {
+        apiDocs.tags.push(tag);
+      }
+    });
+    // merge the paths
     apiDocs.paths = apiDocs.paths || {};
     lodash.forOwn(fromDocs.paths, function(descriptor, apiUrl) {
       apiDocs.paths[apiUrl] = descriptor;
     });
+    // merge the definitions
     apiDocs.definitions = apiDocs.definitions || {};
     lodash.forOwn(fromDocs.definitions, function (descriptor, name) {
       apiDocs.definitions[name] = descriptor;
@@ -62,25 +77,6 @@ function Service(params = {}) {
       apiDocs.externalDocs = apiDocs.externalDocs || {};
       lodash.merge(apiDocs.externalDocs, externalDocs);
     }
-  }
-
-  this.addTags = function (tags) {
-    if (!lodash.isArray(tags)) {
-      throw new Error('tags must be an array');
-    }
-    
-  }
-
-  this.setTags = function () {
-
-  }
-
-  this.addPaths = function () {
-
-  }
-
-  this.setPaths = function () {
-    
   }
 
   this.validate = function () {
